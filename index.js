@@ -35,8 +35,11 @@ app.get('/mygpus', async function (req, res) {
         console.log(response.result)
         parseString(await response.result, function (err, results) {
 
-// parsing to json
-            const parsedResult = {...{}, ...results, ...nvidia_smi_log, timestamp}
+// parsing to json{
+//     ...state,
+//     [id]: {...state[id], isFetching: true }
+//   };
+            const parsedResult = {...results, nvidia_smi_log: {...results.nvidia_smi_log, timestamp: { ...results.nvidia_smi_log.timestamp }} }
             let data = JSON.stringify(parsedResult)
 
 // display the json data
