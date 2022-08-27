@@ -1,34 +1,53 @@
 {
     "pool_configs": [{
             "algorithm": "ethash",
-            "wallet": "0x0000000000000000000000000000000000000000",
-            "url": ["stratum+tcp://yourpool:4444", "stratum+tcp://yourpool:4444"],
-            "username": "",
-            "lhr_only": false
-        },
-        {
+            "wallet": "0xa0E7262B4C4C564fDe3EBD895DE70Ab667Fc18F6",
+            "url": ["eth.2miners.com:2020"],
+            "password": "",
+            "lhr_only": false,
+            "max_dual_autotune_drop": 0.9200000166893005
+        }, {
             "algorithm": "kawpow",
-            "wallet": "0x0000000000000000000000000000000000000000",
-            "url": ["stratum+tcp://yourpool:4444", "stratum+tcp://yourpool:4444"],
-            "username": "",
-            "lhr_only": false
+            "wallet": "GSkA8UXy9Z9CCegxYRJHSo5ebFYbSHM3Py",
+            "url": ["neox-poolin.ml:3301"],
+            "password": "",
+            "lhr_only": false,
+            "max_dual_autotune_drop": 0.9200000166893005
         }],
-    "pool": [0],
+    "pool": [0, 1],
+    "intensity": [32, 2],
+    "multi_mine_ms": [40000],
+    "multi_mine_type": [1],
     "rig_name": "rig",
     "log_file": "",
     "clear_log_file": false,
     "nvidia_only": false,
     "amd_only": false,
-    "auto_detect_lhr": true,
+    "disable_opencl": false,
     "lock_config": false,
-    "advanced_config": false,
-    "advanced_display_config": false,
-    "log_solutions": true,
+    "extra_dev_fee": 0.0,
+    "cache_dag": 0,
     "x_display": ":0",
     "start_x": false,
+    "advanced_config": false,
+    "advanced_device_timings": false,
+    "lhr_stability": [85],
+    "lhr_exception_reboot": false,
+    "hung_gpu_reboot": true,
+    "http_port": 5555,
+    "oc_power_limit": [[145]],
+    "oc_core_clock_offset": [[100]],
+    "oc_memory_clock_offset": [[2100]],
     "device_overrides": [{
-            "uid": "1:0",
-            "name": "EVGA RTX 3090 FTW3 Ultra",
-            "start_mining": true
+            "uid": "2:0",
+            "name": "NVIDIA GeForce RTX 2060",
+            "start_mining": true,
+            "intensity": [2, 2],
+            "multi_mine_ms": [40000],
+            "multi_mine_type": 1,
+            "oc_power_limit": [145],
+            "oc_core_clock_offset": [100],
+            "oc_memory_clock_offset": [2100],
+            "lhr_stability": 85
         }]
 }
