@@ -1,0 +1,139 @@
+************************************
+*                                  *
+*  BzMiner v10.0 Quick Start Guide  *
+*                                  *
+************************************
+
+### Command Line ###
+
+use the following command to have all GPUs mine on the same pool and wallet:
+
+`bzminer -a ethash -r rig_name -p pool_address -w wallet_address`
+
+change ethash to the algorithm you want to mine. Algorithms are:
+ethash (Ethereum, 0.5% dev fee)
+etchash (Ethereum Classic, 0.5% dev fee)
+kawpow (Ravencoin, 0.5% dev fee)
+olhash (Overline, 1% dev fee)
+alph (Alephium, 0.5% dev fee) (May require 4 addresses)
+kaspa (Kaspa, 1% dev fee + 2% Kaspa dev team fee (optional, config.txt option "blockchain_fee": false to disable)
+ixi (Ixian, 1% dev fee)
+
+### Config File ###
+
+Update the following properties in the config file under the "pool_configs" option:
+
+algorithm: the algorithm you are mining
+wallet: wallet to mine to
+url: pool url
+username: rig name (worker name)
+
+Then run bzminer or through the command line:
+
+`bzminer`
+
+Optionally you can specify the config file to load:
+
+`bzminer -c config.txt`
+
+### Console Inputs ###
+
+BzMiner supports a couple console inputs while it's running.
+
+Space - Refreshes output
+
+Up Arrow Key - increase first algo's intensity by 1
+
+Down Arrow Key - decrease first algo's intensity by 1
+
+Right Arrow Key - increase second algo's intensity by 1
+
+Left Arrow Key - decrease second algo's intensity by 1
+
+### Optimized Dual Mining ###
+
+BzMiner allows dual/multi mining for any coins, but specific combinations now have an optimized implementation to get the most out of dual mining.
+
+This works by having a second core algorithm run on unused cores while the first algorithm is hitting memory. Due to the unused cores now being used, you may need to increase your power limits.
+
+The optimized implementations are very experimental still and need a lot more work, but they do work for the majority of users.
+
+Play with the second algorithms intensity to change the ratio of how much hashrate is spent on each of the two coins.
+
+BzMiner will show an estimated percentage in the status column of how much hashrate out of the theoretical max hashrate you are getting, allowing you to more easily see the benefits of dual mining.
+
+Currently only these combinations are supported (and only on Nvidia cards right now)
+eth + alph
+etc + alph
+eth + kaspa
+etc + kaspa
+
+### LHR Bypass ###
+LHR Bypass can be unstable. Play with the lhr_stability option to find best stability.
+
+LHR Bypass can be disabled by setting the "lhr_stability" option in the config.txt file, or through the command line option --lhr_stability to 0
+
+lhr_stability impacts the hashrate and stability of the lhr unlock. Higher values = higher hashrate, lower stability, lower values = lower hashrate, higher stability. Play with it!
+
+LHR can run into "exceptions" which cause the miner to mine very very slowly, and the only way to recover from this is a hard device reset, which is currently done through a pc reboot. BzMiner provides the option --lhr_exception_reboot to automatically reboot the pc after 10 seconds when a card is discovered to have an lhr exception.
+
+### Graphical User Interface ###
+
+BzMiner will save out a file called "index.html" which will connect to your localhost in a web browser with the port set from the config file. This is where you will find the BzMiner GUI, which will allow you to remotely monitor your rig, as well as view other rigs on the network and adjust settings on the miners remotely.
+
+To show the other devices on the network, BzMiner broadcasts a udp message over the local area network, and waits for responses from other instances of bzminer. This can be disabled in BzMiner through the config flag "disable_udp". If this is disabled, that rig will not respond to this message, and will not show up in the GUI's rigs column for other BzMiner instances.
+
+### GPU Throttling ###
+As of v9.1.4, bzminer will now color code power usage and temperatures based on whether they are throttling or not:
+
+core/mem: green = no throttling, red = throttle engaged, yellow = close to throttle engaged, but not yet engaged
+
+power: white = no throttle, yellow = power limit reached and gpu throttling to stay below power limit
+
+### Hive OS Note ###
+
+Running BzMiner manually on Hive OS (without running through the Hive OS flightsheet) requires the following command to be ran before running BzMiner:
+
+export LD_LIBRARY_PATH=/hive/lib
+
+### Disable specific GPUs ###
+
+GPU's can be disabled either through the command line or through config.txt
+
+The command line argument is "--disable" and expects a space separated list of gpu unique ids, or indexes
+
+eg.
+
+"bzminer --disable 1:0 3:0"
+
+or 
+
+"bzminer --disable 0 3 5"
+
+Optionally they can be disabled directly from the config.txt file, under the gpu in the config.txt file, set "auto_start" to false
+
+### Watchdog ###
+
+By default, the BzMiner watchdog is enabled, which will restart BzMiner if it ever gets stuck. Optionally in the configuration file, you can set whether BzMiner reboots the rig when hung gpus are detected, as well as automatically call a script which can be specified in the config file under the option "crash_script". When crash_script is called (if specified), the last BzMiner log (to both the standard output and the log file if specified) will be in the format of:
+
+Hung GPU detected! (gpu_bus_id:gpu_device_id)
+
+where gpu_bus_id and gpu_device_id are the identifiers for which GPU was detected as hung (not responding)
+
+BzMiner provides and option called "reboot_after_watchdog_restarts". The default is 0. If this is set, then the pc will reboot after x number of watchdog restarts. This can be helpful sometimes when the gpus get into a bad state and a reboot is required.
+
+BzMiner also includes other watchdogs such as tbs (time between shares), where if it detects shares are not being found for too long, the device will reset and the pool will be reconnected. Sometimes things just get into a bad state, so this will help keep things mining.
+
+## Auto fan oc ##
+
+Fans can be set using --oc_fan_speed. A single value (eg. 50) will set the fan speed to that percentage. Multiple values, separated by spaces can be used to set individual gpu fans. 
+
+For example, "--oc_fan_speed 50 75" will lock the first gpus fans to 50% and second gpu to 75%
+
+Auto fan control can be set, by providing a target temperature for either the core or memory, and optionally a min and max range the fan can operate in.
+
+Format follows "t:N[fMin-fMax]" where t can be either t for core or tm for memory, N is the target temperature, and tMin and tMax is the fan operating range.
+
+For example, "tm:85[25-75]" will target a memory temperature of 85, and keep the fan within 25% and 75%
+
+If tm is specified and the memory temperature is not available, core temperature will be used.
